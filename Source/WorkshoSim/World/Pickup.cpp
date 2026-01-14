@@ -40,9 +40,10 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 		ItemReference->NumericData = ItemData->NumericData;
 		ItemReference->TextData = ItemData->TextData;
 		ItemReference->AssetData = ItemData->AssetData;
-		ItemReference->Quantity = ItemData->Quantity;
+		ItemReference->Quantity = (InQuantity > 1 ? InQuantity : 1);
 
-		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
+		UE_LOG(LogTemp, Warning, TEXT("In Quant - %d, Item Data Quant - %d, Item Ref Quant - %d"), InQuantity, ItemData->Quantity, ItemReference->Quantity);
+		// InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
 
 		PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 

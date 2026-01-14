@@ -35,7 +35,6 @@ UItemBase* UItemBase::CreateItemCopy() const
 
 void UItemBase::SetQuantity(const int32 NewQuantity)
 {
-    UE_LOG(LogTemp, Warning, TEXT("SetQuantity called."));
     if (NewQuantity != Quantity)
     {
         Quantity = FMath::Clamp(NewQuantity, 0, NumericData.bIsStackable ? NumericData.MaxStackSize : 1);

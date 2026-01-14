@@ -16,6 +16,7 @@ class ACraftWood;
 class IInteractionInterface;
 class APlayerHUD;
 class UItemBase;
+class UInventoryComponent;
 
 USTRUCT()
 struct FInteractionData

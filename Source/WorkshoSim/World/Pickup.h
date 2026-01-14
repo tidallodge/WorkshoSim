@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WorkshoSim/Interfaces/InteractionInterface.h"
 #include "Pickup.generated.h"
 
 struct FInteractableData;

@@ -147,9 +147,10 @@ FItemAddResult UInventoryComponent::HandleNonStackableItems(UItemBase* InputItem
 
 int32 UInventoryComponent::HandleStackableItems(UItemBase* InputItem, int32 RequestedAddAmount)
 {
-	if (RequestedAddAmount <= 0 == FMath::IsNearlyZero(InputItem->GetItemStackWeight()))
+	if (RequestedAddAmount <= 0)
 	{
 		// invalid item data
+		UE_LOG(LogTemp, Warning, TEXT("Failed to HandleStackableItems, RequestedAddAmount is invalid: %d"), RequestedAddAmount);
 		return 0;
 	}
 
@@ -164,30 +165,30 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* InputItem, int32 Requ
 		// calculate how many of the existing item would be needed to make the next full stack
 		const int32 AmountToMakeFullStack = CalculateNumberForFullStack(ExistingItemStack, AmountToDistribute);
 		// calculate how many of the amount to make full stack can be added without exceeding weight capacitiy
-		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItemStack, AmountToMakeFullStack);
+		// const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItemStack, AmountToMakeFullStack);
 
 		// if remaining amount of item does not overflow weight capacitiy
-		if (WeightLimitAddAmount > 0)
-		{
-			// adjust the existing items stack quantity and inventory total weight
-			ExistingItemStack->SetQuantity(ExistingItemStack->Quantity + WeightLimitAddAmount);
-			InventoryTotalWeight += (ExistingItemStack->GetItemSingleWeight() * WeightLimitAddAmount);
+		// if (WeightLimitAddAmount > 0)
+		// {
+		// 	// adjust the existing items stack quantity and inventory total weight
+		// 	ExistingItemStack->SetQuantity(ExistingItemStack->Quantity + WeightLimitAddAmount);
+		// 	InventoryTotalWeight += (ExistingItemStack->GetItemSingleWeight() * WeightLimitAddAmount);
 
-			// adjust count to be distributed
-			AmountToDistribute -= WeightLimitAddAmount;
+		// 	// adjust count to be distributed
+		// 	AmountToDistribute -= WeightLimitAddAmount;
 
-			InputItem->Quantity = AmountToDistribute;
+		// 	InputItem->Quantity = AmountToDistribute;
 
-			// if max weight capacity is reached, exit loop
-			if (InventoryTotalWeight >= InventoryWeightCapacity)
-			{
-				OnInventoryUpdated.Broadcast();
-				return RequestedAddAmount - AmountToDistribute;
-			}
-		}
+		// 	// if max weight capacity is reached, exit loop
+		// 	if (InventoryTotalWeight >= InventoryWeightCapacity)
+		// 	{
+		// 		OnInventoryUpdated.Broadcast();
+		// 		return RequestedAddAmount - AmountToDistribute;
+		// 	}
+		// }
 		// 
-		else if (WeightLimitAddAmount <= 0)
-		{
+		// else if (WeightLimitAddAmount <= 0)
+		// {
 			if (AmountToDistribute != RequestedAddAmount)
 			{
 				// this block will be hit if distributing and item across multiple stacks
@@ -197,7 +198,7 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* InputItem, int32 Requ
 			}
 
 			return 0;
-		}
+		// }
 
 		if (AmountToDistribute <= 0)
 		{
@@ -214,27 +215,27 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* InputItem, int32 Requ
 	if (InventoryContents.Num() + 1 <= InventorySlotsCapacity)
 	{
 		// attempt to add as many from remaining item quat that can fit with weight
-		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(InputItem, AmountToDistribute);
+		// const int32 WeightLimitAddAmount = CalculateWeightAddAmount(InputItem, AmountToDistribute);
 
-		if (WeightLimitAddAmount > 0)
-		{
+		// if (WeightLimitAddAmount > 0)
+		// {
 			// if more items to distribute, but weight limit reached
-			if (WeightLimitAddAmount < AmountToDistribute)
-			{
-				// adjust input item, and add new stack that can be added below weight capacity
-				AmountToDistribute -= WeightLimitAddAmount;
-				InputItem->SetQuantity(AmountToDistribute);
+			// if (WeightLimitAddAmount < AmountToDistribute)
+			// {
+			// 	// adjust input item, and add new stack that can be added below weight capacity
+			// 	AmountToDistribute -= WeightLimitAddAmount;
+			// 	InputItem->SetQuantity(AmountToDistribute);
 
 				
-				// create a copy since only partial item stack added
-				AddNewItem(InputItem->CreateItemCopy(), WeightLimitAddAmount);
-				return RequestedAddAmount - AmountToDistribute;
-			}
+			// 	// create a copy since only partial item stack added
+			// 	AddNewItem(InputItem->CreateItemCopy(), WeightLimitAddAmount);
+			// 	return RequestedAddAmount - AmountToDistribute;
+			// }
 
 			// full stack added to inventory
 			AddNewItem(InputItem, AmountToDistribute);
 			return RequestedAddAmount;
-		}
+		// }
 	}
 
 	OnInventoryUpdated.Broadcast();
@@ -253,7 +254,7 @@ FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
 			return HandleNonStackableItems(InputItem);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("initial request amount - {0}"), InitialRequestedAddAmount);
+		UE_LOG(LogTemp, Warning, TEXT("initial request amount - %d"), InitialRequestedAddAmount);
 		// handle stackable
 		const int32 StackableAmountAdded = HandleStackableItems(InputItem, InitialRequestedAddAmount);
 
