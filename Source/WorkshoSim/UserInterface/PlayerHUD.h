@@ -9,6 +9,7 @@
 struct FInteractableData;
 class UMainMenu;
 class UInteractionWidget;
+class UUserWidget;
 /**
  * 
  */
@@ -24,6 +25,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UInteractionWidget> InteractionWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> CrosshairWidgetClass;
+
 	bool bIsMenuVisible;
 
 	void PlayerHUD();
@@ -31,6 +35,9 @@ public:
 	void DisplayMenu();
 	void HideMenu();
 	void ToggleMenu();
+
+	void ShowCrosshair();
+	void HideCrosshair();
 
 	void ShowInteractionWidget();
 	void HideInteractionWidget();
@@ -44,4 +51,7 @@ protected:
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget;
+
+	UPROPERTY()
+	UUserWidget* CrosshairWidget;
 };

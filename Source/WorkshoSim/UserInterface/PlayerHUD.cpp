@@ -29,6 +29,12 @@ void APlayerHUD::BeginPlay()
         InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 
+    if (CrosshairWidgetClass)
+    {
+        CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
+        CrosshairWidget->AddToViewport();
+        CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
+    }
 }
 
 
@@ -66,6 +72,22 @@ void APlayerHUD::ToggleMenu()
         const FInputModeGameAndUI InputMode;
         GetOwningPlayerController()->SetInputMode(InputMode);
         GetOwningPlayerController()->SetShowMouseCursor(true);        
+    }
+}
+
+void APlayerHUD::ShowCrosshair()
+{
+    if (CrosshairWidget)
+    {
+        CrosshairWidget->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
+void APlayerHUD::HideCrosshair()
+{
+    if (CrosshairWidget)
+    {
+        CrosshairWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 }
 

@@ -43,6 +43,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	HUD = Cast<APlayerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	HUD->ShowCrosshair();
 }
 
 // Called to bind functionality to input
